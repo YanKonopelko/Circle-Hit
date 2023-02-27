@@ -1,36 +1,45 @@
+using NTC.Global.Cache;
 using UnityEngine;
-using Pathfinding;
+using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoCache
 {
-    private AIPath ap;
-    private const float speed = 2;
-    void Start()
+    private NavMeshAgent agent;
+    private const float speed = 7;
+    private int priority = 0;
+    [SerializeField] private float force = 10;
+    private Rigidbody2D rb;
+
+    private Transform myTransform;
+    protected override void OnEnabled()
     {
-        ap = GetComponent<AIPath>();
-        GameSceneManager.instance.onGameStart += SetTarget;
-        ap.maxSpeed = speed;
+        agent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody2D>();
+        agent.speed = speed;
+        agent.updateRotation = false;
+        agent.updateUpAxis = false;
+        myTransform = transform;
     }
-    
+
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Pet"))
             col.gameObject.GetComponent<Pet>().Lose();
+        if (col.gameObject.GetComponent<DrowLine>() != null)
+        {
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(force*rb.velocity.normalized,ForceMode2D.Impulse);
+            rb.AddForce(-1*(force/2*rb.velocity.normalized),ForceMode2D.Impulse);
+        }
     }
-
-    private void SetTarget()
-    {
-        Path a;
-        ap.target = FindObjectOfType<Pet>().transform;
-    }
-
+    
     public void Death()
     {
         Destroy(gameObject);
     }
 
-    private void OnDisable()
+    protected override void Run()
     {
-        GameSceneManager.instance.onGameStart -= SetTarget;
+        var tr = Quaternion.LookRotation(myTransform.forward,GameSceneManager.instanse.pet.transform.position);
+        myTransform.rotation = Quaternion.RotateTowards(myTransform.rotation,tr,Time.deltaTime* speed);
     }
 }

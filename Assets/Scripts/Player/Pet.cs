@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Pet : MonoBehaviour
 {
@@ -14,7 +13,6 @@ public class Pet : MonoBehaviour
     
     public void Lose()
     {
-        Debug.Log("Lose");
-        SceneManager.LoadScene(0);
+        LevelManager.instance.Reload();
     }
 }

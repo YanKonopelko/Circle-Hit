@@ -1,18 +1,26 @@
+using NTC.Global.Cache;
 using UnityEngine;
 
-public class InputManager : MonoBehaviour
+public class InputManager : MonoCache
 {
     [SerializeField] private GameObject lineCreator;
     GameObject currentCreator;
 
-    private bool isStarted;
-    private void Update()
+    static private bool isMouse;
+
+    public static bool isOnAllowed = true;
+    protected override void Run()
     {
-        if (Input.GetMouseButtonDown(0) && InkManager.inkAmount > 0 && !GameSceneManager.instance.isStarted) 
+        if ( InkManager.inkAmount > 0  && isOnAllowed)
+        {
+            if (Input.GetMouseButtonDown(0))
+                isMouse = true;
+            else if(Input.touchCount>0)
+                isMouse = false;
+            else 
+                return;
             CreateLineCreator(InkManager.currentColor);
-        else if (Input.GetMouseButtonUp(0)) GameSceneManager.instance.StartGame();
-            
-        
+        }    
     }
 
     private void CreateLineCreator(int color)
@@ -22,12 +30,20 @@ public class InputManager : MonoBehaviour
         
         currentCreator.GetComponent<DrowLine>().startPos = GetWorldPosition();
         currentCreator.GetComponent<DrowLine>().colorNum = color;
-
+        enabled = false;
     }
     public static Vector2 GetWorldPosition()
     {
-        Vector3 mousePosition = Input.mousePosition;
-        Vector2 mouseCoor = new Vector3(mousePosition.x, mousePosition.y, 1);
-        return Camera.main.ScreenToWorldPoint(mouseCoor);
+        Vector2 coor;
+        Vector3 pos;
+        if (isMouse)
+            pos = Input.mousePosition;
+        else
+            pos = Input.GetTouch(0).position;
+ 
+        coor = new Vector3(pos.x, pos.y, 1);
+
+        return Camera.main.ScreenToWorldPoint(coor);
     }
+    
 }
