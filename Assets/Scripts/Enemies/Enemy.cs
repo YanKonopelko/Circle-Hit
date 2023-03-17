@@ -19,6 +19,7 @@ public class Enemy : MonoCache
         agent.updateRotation = false;
         agent.updateUpAxis = false;
         myTransform = transform;
+        SoundManager.Instance.PlaySound(SoundManager.Instance.EnemySound);
     }
 
     private void OnCollisionEnter2D(Collision2D col)

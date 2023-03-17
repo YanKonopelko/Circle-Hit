@@ -1,7 +1,5 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-
 public class LevelManager : MonoBehaviour
 {
     private bool isPlaying;
@@ -25,13 +23,18 @@ public class LevelManager : MonoBehaviour
     {
         var lvl = PlayerPrefs.GetInt("LastLevel")+1;
         PlayerPrefs.SetInt("LastLevel",lvl);    
-        SceneManager.LoadScene(lvl%4+2);
+        SceneManager.LoadScene(lvl%(SceneManager.sceneCountInBuildSettings-2)+2);
     }
 
     public void Reload()
     {
+        Debug.Log(SceneManager.sceneCountInBuildSettings); 
         var lvl = PlayerPrefs.GetInt("LastLevel");
-        SceneManager.LoadScene(lvl%4+2);
+        SceneManager.LoadScene(lvl%(SceneManager.sceneCountInBuildSettings-2)+2);
     }
 
+    public void SkipLevel()
+    {
+        NextLevel();
+    }
 }

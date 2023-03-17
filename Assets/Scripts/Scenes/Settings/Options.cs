@@ -27,6 +27,5 @@ public class Options : MonoBehaviour
     {
         MusicManager.Instance.ChangeVolume(slider.value);
         PlayerPrefs.SetFloat("MUSIC_VOLUME", slider.value);
-
     }
 }

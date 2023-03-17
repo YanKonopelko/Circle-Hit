@@ -13,6 +13,6 @@ public class Pet : MonoBehaviour
     
     public void Lose()
     {
-        LevelManager.instance.Reload();
+        GameSceneManager.instanse.Lose();
     }
 }

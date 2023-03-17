@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6032756160000292813}
   - component: {fileID: 8285911905639433571}
   - component: {fileID: 3008892622500582031}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LineCreator(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Positions:
   - {x: -24.022118, y: 23.64095, z: 0}
   - {x: -24.022118, y: 23.647131, z: 0}

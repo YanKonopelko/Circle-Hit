@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using YandexMobileAds;
@@ -7,10 +6,13 @@ public class MainMenu : MonoBehaviour
 {
     
     private Banner banner;
+    private Interstitial interstitial;
 
     private void Start()
     {
-        RequestBanner();
+        RequestInterstitial();
+        ShowInterstitial();
+        AdManager.Instance.FullScreen();
     }
 
     public void StartLastLevel()
@@ -22,17 +24,30 @@ public class MainMenu : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
-    private void RequestBanner()
+
+    private void RequestInterstitial()
     {
-        string adUnitId = "demo-banner-yandex";
+        string adUnitId = "R-M-2211699-2";
+
+        interstitial = new Interstitial(adUnitId);
         
-        AdSize bannerMaxSize = AdSize.FlexibleSize(GetScreenWidthDp(), 100);
+        AdRequest request = new AdRequest.Builder().Build();
+        var a = new AdRequest.Builder();
+        a.WithAdRequest(request);
         
-        banner = new Banner(adUnitId, bannerMaxSize, AdPosition.BottomCenter);
+        interstitial.LoadAd(a.Build());
+        Debug.Log(interstitial.IsLoaded());
     }
-    private int GetScreenWidthDp()
+    private void ShowInterstitial()
     {
-        int screenWidth = (int)Screen.safeArea.width;
-        return ScreenUtils.ConvertPixelsToDp(screenWidth);
+        if (interstitial.IsLoaded())
+        {
+            interstitial.Show();
+        }
+        else
+        {
+            Debug.Log("Interstitial is not ready yet");
+        }
     }
+    
 }

@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
  using NavMeshPlus.Components;
- using NTC.Global.Cache;
 
- public class DrowLine : MonoCache 
+ public class DrowLine : MonoBehaviour 
  {
 
      private LineRenderer Line;
@@ -30,13 +29,13 @@ using System.Collections.Generic;
          lastPos = startPos;
      }
      
-     protected override void Run()
+
+     private void Update()
      {
          if ((Input.touchCount > 0 || Input.GetMouseButton(0) ) && InkManager.inkAmount > 0)
              NewPart();
-         else if (Input.GetMouseButtonUp(0) || (Input.touchCount==0))
-             EndLine();
-     }
+         else if (Input.GetMouseButtonUp(0) || (Input.touchCount==0) || InkManager.inkAmount <=0 )
+             EndLine();     }
 
      private Vector2 FixPos(Vector2 from)
      {
@@ -83,7 +82,7 @@ using System.Collections.Generic;
              
              if (lastPos == newPoint) return;
              lastPos = newPoint;
-             InkManager.inkAmount -= Time.deltaTime * 10;
+             InkManager.inkAmount -= InkManager.currentPrice;
              Line.positionCount++;
              Line.SetPosition(Line.positionCount - 1, newPoint);
 

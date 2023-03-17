@@ -1,6 +1,6 @@
 using NTC.Global.System;
 using UnityEngine;
-
+[RequireComponent(typeof(AudioSource))]
 public class MusicManager : Singleton<MusicManager>
 {
     private bool isPlaying;
@@ -19,6 +19,8 @@ public class MusicManager : Singleton<MusicManager>
         
         volume = (PlayerPrefs.HasKey("MUSIC_VOLUME")) ? PlayerPrefs.GetFloat("MUSIC_VOLUME") : volume;
         _audioSource.volume = volume;
+        DontDestroyOnLoad(transform.gameObject);
+
     }
     
     public void ChangeVolume(float newVolume)

@@ -3,12 +3,13 @@ using System.Collections;
 using NavMeshPlus.Components;
 using NTC.Global.Cache;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoCache
 {
     public static GameSceneManager instanse;
     public Action onGameStart;
-
+    public Action<bool> onGameEnd;
     public Pet pet;
     private NavMeshSurface Surface2D;
 
@@ -16,23 +17,25 @@ public class GameSceneManager : MonoCache
     private void Awake()
     {
         instanse = this;
+        Time.timeScale = 0;
         pet = FindObjectOfType<Pet>();
         Surface2D = FindObjectOfType<NavMeshSurface>();
         Surface2D.BuildNavMeshAsync();
+        onGameEnd += Stop;
     }
 
     public void StartGame()
     {
         onGameStart.Invoke();
+        Time.timeScale = 1;
         StartCoroutine(TimeCheck());
-        StartCoroutine(NavUptdate());
+        NavUptdate();
     }
     
     private IEnumerator TimeCheck()
     {
         yield return new WaitForSeconds(1);
         remainingTime--;
-        Debug.Log("Remaining Ti0me:" +remainingTime);
         if (remainingTime == 0)
             Win();
         StartCoroutine(TimeCheck());
@@ -40,12 +43,40 @@ public class GameSceneManager : MonoCache
 
     private void Win()
     {
+        onGameEnd(true);
+    }
+    public void NavUptdate()
+    {
+        Surface2D.UpdateNavMesh(Surface2D.navMeshData);        
+    }
+
+    public void Lose()
+    {
+        onGameEnd(false);
+    }
+
+    public void ToNextLevel()
+    {
         LevelManager.instance.NextLevel();
     }
-    private IEnumerator NavUptdate()
+    public void Reload()
     {
-        yield return new WaitForSeconds(0.5f);
-        Surface2D.UpdateNavMesh(Surface2D.navMeshData);        
-        StartCoroutine(NavUptdate());
+        LevelManager.instance.Reload();
+    }
+
+    public void ToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void SkipLevel()
+    {
+        LevelManager.instance.SkipLevel();
+        AdManager.Instance.RewardedVideo();
+    }
+
+    private void Stop(bool a)
+    {
+        Time.timeScale = 0;
     }
 }
